@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ວິທີສະໝັກ XR Tradings</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0b0f14;
+      color: #f5f7fa;
+      font-family: Arial, "Noto Sans Lao", sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 650px;
+      padding: 26px 22px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #151b23, #0e131a);
+      box-shadow: 0 15px 45px rgba(0,0,0,.45);
+    }
+    h1 {
+      margin: 0 0 22px;
+      font-size: 24px;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .xr-title {
+      font-weight: 900;
+      background: linear-gradient(90deg, #ff5a00 0%, #ff9d22 28%, #f4f4f4 58%, #9a9a9a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 18px rgba(255, 122, 0, .18);
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 12px 0;
+      padding: 15px 16px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 6px 18px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.05);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    .step-num {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-top: 1px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+      box-shadow: 0 0 10px rgba(59,130,246,.55), inset 0 1px 0 rgba(255,255,255,.35);
+    }
+    .step-body { flex: 1; min-width: 0; }
+    .step-arrow-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 6px 0 2px;
+    }
+    .step-arrow-down {
+      font-size: 22px;
+      color: #ffd166;
+      text-shadow: 0 0 10px rgba(255,209,102,.85), 0 0 20px rgba(255,209,102,.5);
+      animation: stepArrowBounce 1.3s ease-in-out infinite;
+    }
+    @keyframes stepArrowBounce {
+      0%, 100% { transform: translateY(0); opacity: .75; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+    .link {
+      display: block;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(0, 190, 255, .08);
+      color: #55cfff;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .code {
+      font-weight: 700;
+      color: #ffd166;
+    }
+    .warning {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255, 75, 75, .10);
+      border: 1px solid rgba(255, 75, 75, .25);
+      color: #ffb4b4;
+      line-height: 1.65;
+    }
+
+    /* ===== STEP 2 — Authenticator downloads ===== */
+    .auth-step2 {
+      margin-top: 24px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,.12);
+    }
+    .auth-step2-head {
+      margin-bottom: 14px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,193,7,.13), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,214,82,.34);
+      box-shadow: 0 8px 28px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .auth-step2-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.55;
+      font-weight: 900;
+      color: #ffe082;
+    }
+    .auth-step2-subtitle {
+      margin: 8px 0 0;
+      color: #d7dde5;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .auth-download-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .auth-download-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: 0 8px 24px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.05);
+      min-width: 0;
+    }
+    .auth-platform {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      color: #f4f7fb;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .auth-download-card h3 {
+      margin: 0 0 5px;
+      font-size: 16px;
+      line-height: 1.4;
+      color: #fff;
+    }
+    .auth-download-card p {
+      margin: 0 0 12px;
+      min-height: 48px;
+      color: #c6ced8;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .auth-download-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 14px;
+      color: #101318;
+      background: linear-gradient(135deg, #ffe36e, #ffb300 58%, #ffd54f);
+      border: 1px solid #ffe082;
+      box-shadow: 0 0 12px rgba(255,193,7,.25), inset 0 1px 0 rgba(255,255,255,.65);
+      transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+    }
+    .auth-download-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow: 0 0 18px rgba(255,193,7,.42), inset 0 1px 0 rgba(255,255,255,.75);
+    }
+    .auth-download-btn:active { transform: scale(.985); }
+    .auth-provider-note {
+      margin-top: 7px;
+      color: #9faab7;
+      font-size: 11px;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .auth-security-note {
+      margin-top: 13px;
+      padding: 13px 14px;
+      border-radius: 13px;
+      background: rgba(0, 180, 255, .065);
+      border: 1px solid rgba(70, 190, 255, .18);
+      color: #bfeaff;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    @media (max-width: 760px) {
+      .auth-download-grid { grid-template-columns: 1fr; }
+      .auth-download-card p { min-height: auto; }
+      .auth-step2-title { font-size: 18px; }
+    }
+
+    /* ===== STEP 3 – Video guide section ===== */
+    .video-step {
+      margin-top: 24px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,.12);
+    }
+    .video-step-head {
+      margin-bottom: 14px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,58,58,.14), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,90,90,.35);
+      box-shadow: 0 8px 28px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .video-step-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.55;
+      font-weight: 900;
+      color: #ffd7d7;
+    }
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .video-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: 0 8px 24px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .video-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      font-size: 15.5px;
+      font-weight: 800;
+      line-height: 1.55;
+      color: #fff;
+    }
+    .video-badge {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px; height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,#ff3a3a,#b30000);
+      font-size: 13px;
+      box-shadow: 0 0 10px rgba(255,58,58,.5);
+    }
+    .video-watch-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 13px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 14.5px;
+      color: #fff;
+      background: linear-gradient(135deg,#ff4b4b 0%,#c60000 60%,#8f0000 100%);
+      border: 1px solid rgba(255,140,140,.45);
+      box-shadow: 0 0 14px rgba(255,40,40,.35), inset 0 1px 0 rgba(255,255,255,.25);
+      transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+    }
+    .video-watch-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+    .video-watch-btn:active { transform: scale(.985); }
+    .video-watch-btn.is-pending {
+      background: linear-gradient(135deg,#4a4f57,#2a2d33);
+      border: 1px dashed rgba(255,255,255,.30);
+      box-shadow: none;
+      color: #cfd3d8;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .video-pending-note {
+      margin-top: 8px;
+      font-size: 11.5px;
+      color: #9faab7;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .video-step-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>📌 ວິທີສະໝັກ <span class="xr-title">XR Tradings</span></h1>
+
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        ກົດລິ້ງລົງທາງລຸ່ມນີ້ ເພື່ອສະໝັກ
+        <div class="step-arrow-wrap"><span class="step-arrow-down">▼</span></div>
+        <a class="link" href="https://xrtradings.com/register?r=D9ZKLL82" target="_blank" rel="noopener">
+          https://xrtradings.com/register?r=D9ZKLL82
+        </a>
+      </div>
+    </div>
+
+    <div class="step"><span class="step-num">2</span><div class="step-body">ໃສ່ Email ຂອງທ່ານ</div></div>
+    <div class="step"><span class="step-num">3</span><div class="step-body">ໃສ່ Password ຕັ້ງລະຫັດຜ່ານ</div></div>
+    <div class="step"><span class="step-num">4</span><div class="step-body">ໃສ່ Confirm Password ໃຫ້ຄືກັນກັບ Password</div></div>
+    <div class="step"><span class="step-num">5</span><div class="step-body">ໃສ່ Invite Code: <span class="code">D9ZKLL82</span> ຖ້າລະບົບຮ້ອງຂໍ</div></div>
+    <div class="step"><span class="step-num">6</span><div class="step-body">ກົດ Sign Up</div></div>
+    <div class="step"><span class="step-num">7</span><div class="step-body">ເຂົ້າ Email ຂອງທ່ານ ແລ້ວກົດ Verify / Confirm Email ເພື່ອຢືນຢັນບັນຊີ</div></div>
+
+    <div class="warning">
+      ⚠️ ຢ່າສົ່ງ Password ໃຫ້ຄົນອື່ນ ແລະຢ່າໃຊ້ Password ດຽວກັນກັບບັນຊີສຳຄັນອື່ນ.
+    </div>
+  
+
+    <!-- XR AUTHENTICATOR STEP 2 START -->
+    <section class="auth-step2" aria-label="ຂັ້ນຕອນທີສອງ ດາວໂຫຼດ Authenticator">
+      <div class="auth-step2-head">
+        <h2 class="auth-step2-title">🔐 ຂັ້ນຕອນທີສອງ: ດາວໂຫຼດແອັບ Authenticator ກ່ອນຕັ້ງຄ່າ 2FA ແລະ ລະຫັດທຸລະກຳ</h2>
+        <p class="auth-step2-subtitle">ເພື່ອກຽມຄວາມພ້ອມສຳລັບການຕັ້ງຄ່າ 2FA ແລະ ລະຫັດທຸລະກຳ ສຳລັບການຝາກ–ຖອນ ໃຫ້ເລືອກຕາມອຸປະກອນທີ່ທ່ານໃຊ້ ແລ້ວກົດ <b>ຕິດຕັ້ງແອັບ 👇</b></p>
+      </div>
+
+      <div class="auth-download-grid">
+        <article class="auth-download-card">
+          <div class="auth-platform">🤖 Android</div>
+          <h3>Google Authenticator</h3>
+          <p>ສຳລັບ Android ເຊັ່ນ Samsung, Xiaomi, OPPO, vivo ແລະ Android ອື່ນໆ.</p>
+          <a class="auth-download-btn" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener noreferrer">📲 ຕິດຕັ້ງແອັບ 👇</a>
+          <div class="auth-provider-note">Google Play • Google LLC</div>
+        </article>
+
+        <article class="auth-download-card">
+          <div class="auth-platform">🍎 iPhone / iPad</div>
+          <h3>Google Authenticator</h3>
+          <p>ສຳລັບ iPhone ແລະ iPad ຜ່ານ App Store ຂອງ Apple.</p>
+          <a class="auth-download-btn" href="https://apps.apple.com/la/app/google-authenticator/id388497605" target="_blank" rel="noopener noreferrer">📲 ຕິດຕັ້ງແອັບ 👇</a>
+          <div class="auth-provider-note">App Store • Google</div>
+        </article>
+
+        <article class="auth-download-card">
+          <div class="auth-platform">💻 MacBook / Mac</div>
+          <h3>Authenticator App</h3>
+          <p>ສຳລັບ MacBook ແລະ Mac. ເປັນແອັບ 2FA ຂອງ 2Stable ສຳລັບ macOS.</p>
+          <a class="auth-download-btn" href="https://apps.apple.com/la/app/authenticator-app/id1538761576?platform=mac" target="_blank" rel="noopener noreferrer">💻 ຕິດຕັ້ງແອັບ 👇</a>
+          <div class="auth-provider-note">App Store • 2Stable • ບໍ່ແມ່ນ Google Authenticator</div>
+        </article>
+      </div>
+
+      <div class="auth-security-note">🔒 <b>ຄຳແນະນຳ:</b> ດາວໂຫຼດຈາກ Store ທີ່ລະບຸເທົ່ານັ້ນ. ຢ່າແບ່ງປັນລະຫັດ 2FA ຫຼື ລະຫັດທຸລະກຳໃຫ້ຄົນອື່ນ.</div>
+    </section>
+    <!-- XR AUTHENTICATOR STEP 2 END -->
+
+    <!-- VIDEO GUIDE STEP 3 START -->
+    <section class="video-step" aria-label="ວີດີໂອຄູ່ມືການສະໝັກແລະຕັ້ງຄ່າ">
+      <div class="video-step-head">
+        <h2 class="video-step-title">🎥 ກົດເບິ່ງວີດີໂອວິທີຕັ້ງຄ່າແອັບ ແລະເປີດ 2FA</h2>
+      </div>
+
+      <div class="video-list">
+        <article class="video-card">
+          <p class="video-card-title"><span class="video-badge">1️⃣</span> ວີດີໂອວິທີສະໝັກ XRtrade ກົດເຂົ້າລິ້ງເພື່ອເບິ່ງ 👇</p>
+          <a class="video-watch-btn" href="https://youtube.com/shorts/1uDzhXqCfnQ?si=vx1GCSsxpjcncOg0" target="_blank" rel="noopener noreferrer">▶️ ກົດເບິ່ງວີດີໂອ</a>
+        </article>
+
+        <article class="video-card">
+          <p class="video-card-title"><span class="video-badge">2️⃣</span> ວີດີໂອວິທີສະໝັກແອັບ Authenticator ກົດເຂົ້າລິ້ງເພື່ອເບິ່ງ 👇</p>
+          <a class="video-watch-btn" href="https://youtube.com/shorts/2rWoHY1J8bw?si=eaZoDo8Cqljh8AVd" target="_blank" rel="noopener noreferrer">▶️ ກົດເບິ່ງວີດີໂອ</a>
+        </article>
+
+        <article class="video-card">
+          <p class="video-card-title"><span class="video-badge">3️⃣</span> ວີດີໂອວິທີຕັ້ງຄ່າລະຫັດ 2FA - ລະຫັດທຸລະກຳ ກົດເຂົ້າລິ້ງເພື່ອເບິ່ງ 👇</p>
+          <a class="video-watch-btn" href="https://youtube.com/shorts/4QdkgTq1ibM?si=OVFLSMvH-gS3MCES" target="_blank" rel="noopener noreferrer">▶️ ກົດເບິ່ງວີດີໂອ</a>
+        </article>
+      </div>
+    </section>
+    <!-- VIDEO GUIDE STEP 3 END -->
+
+  </main>
+</body>
+</html>
