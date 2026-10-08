@@ -5682,9 +5682,6 @@ button, a, [role="button"] {
       <div class="brand-text">
         <h1><span class="gavin">Gavin</span> <span class="trader">Trader</span> <span class="verified-mark" aria-label="ຢືນຢັນແລ້ວ">✓</span></h1>
         <div class="owner-marquee"><div class="owner-marquee-track">-ສະຫງວນລິຂະສິດ Gavin Trader ເປັນເຈົ້າຂອງແຕ່ຜູ້ດຽວ ຫ້າມບຸກຄົນອື່ນລອກແບບ ເອົາໄປເຜີຍແຜ່ໂດຍບໍ່ໄດ້ຮັບອະນຸຍາດ</div></div>
-        <button id="aiVoiceToggle" class="ai-voice-toggle" type="button" aria-pressed="true" title="ເປີດສຽງ AI">
-          <span class="ai-voice-icon" aria-hidden="true">🔊</span><span class="ai-voice-text">AI ສຽງເປີດ</span>
-        </button>
       </div>
     </div>
     <div class="symbol-status-wrap">
@@ -11169,40 +11166,52 @@ function warmUpSpeech(){
     if(!('speechSynthesis' in window)) return;
     const u = new SpeechSynthesisUtterance(' ');
     u.volume = 0;
-    window.speechSynthesis.speak(u);
+    /* AI voice warm-up removed */
   }catch(e){}
 }
 function speakQueued(text, opts, onEnd){
-  const source = (opts && opts.source) || 'graph1';
-  try{ if(typeof window.getActiveChartAudioMode==='function' && window.getActiveChartAudioMode() !== source){ if(typeof onEnd === 'function') onEnd(); return; } }catch(e){}
-  if(isGraph3OnlyMode() && !(opts && opts.source === 'graph3')){
-    if(typeof onEnd === 'function') onEnd();
+  const source = (opts && opts.source) || '';
+  // AI voice is enabled ONLY for Graph 1.
+  if(source !== 'graph1'){
+    if(typeof onEnd === 'function'){ try{ onEnd(); }catch(e){} }
     return;
   }
   try{
-    // AI ສຽງປິດ = AI
-    if(window.gavinAiVoiceEnabled === false){
+    if(!('speechSynthesis' in window)){
       if(onEnd) onEnd();
       return;
     }
-    if(!('speechSynthesis' in window)) { if(onEnd) onEnd(); return; }
-    const utter = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(String(text || ''));
     utter.lang = 'th-TH';
-    utter.rate = (opts && opts.rate) || 1.08;   // ຂຶ້ນ
-    utter.pitch = (opts && opts.pitch) || 1.4;  // ຂຶ້ນ
+    utter.rate = (opts && opts.rate) || 1.02;
+    utter.pitch = (opts && opts.pitch) || 1.12;
     utter.volume = 1;
     const v = pickFemaleThaiVoice();
     if(v) utter.voice = v;
     if(onEnd){ utter.onend = onEnd; utter.onerror = onEnd; }
-    // cancel() ສີ ສີ AI ໂຕ
     window.speechSynthesis.speak(utter);
-  }catch(e){ if(onEnd) onEnd(); }
+  }catch(e){
+    if(onEnd) onEnd();
+  }
 }
 
 function speakSignalVoice(dir, reasonText, onEnd){
-  const action = dir === 'BUY' ? 'ກົດຊື້' : 'ກົດຂາຍ';
-  const text = reasonText ? `${action} ເພາະສັນຍານຈາກ ${reasonText}` : action;
-  speakQueued(text, {source:'graph3'}, onEnd);
+  const action = dir === 'BUY' ? 'ซื้อ' : 'ขาย';
+  const reasonMap = {
+    'MACD ຕັດຂຶ້ນເໜືອ Signal': 'MACD ตัดขึ้นเหนือเส้น Signal',
+    'MACD ຕັດລົງໃຕ້ Signal': 'MACD ตัดลงใต้เส้น Signal',
+    'MACD ຕັດຂຶ້ນ + ຢູ່ໃຕ້ 0': 'MACD ตัดขึ้นและอยู่ใต้ศูนย์',
+    'MACD ຕັດລົງ + ຢູ່ເໜືອ 0': 'MACD ตัดลงและอยู่เหนือศูนย์',
+    'Histogram ບວກເພີ່ມ': 'ฮิสโตแกรมเป็นบวกและเพิ่มขึ้น',
+    'Histogram ລົບຫຼຸດລົງ': 'ฮิสโตแกรมเป็นลบและลดลง',
+    'MACD ສູງຂຶ້ນ ເຖິງຈະຢູ່ໃຕ້ Signal': 'MACD กำลังสูงขึ้น แม้ยังอยู่ใต้เส้น Signal',
+    'MACD ຕ່ຳລົງ ເຖິງຈະຢູ່ເໜືອ Signal': 'MACD กำลังลดลง แม้ยังอยู่เหนือเส้น Signal',
+    'MACD+Signal ຕັດຂຶ້ນພ້ອມ': 'MACD และ Signal ตัดขึ้นพร้อมกัน',
+    'MACD+Signal ຕັດລົງພ້ອມ': 'MACD และ Signal ตัดลงพร้อมกัน'
+  };
+  const reason = reasonMap[reasonText] || String(reasonText || 'เงื่อนไขอินดิเคเตอร์');
+  speakQueued(`${action} เพราะ${reason}`, {source:'graph1', rate:1.02, pitch:1.12}, onEnd);
 }
 
 // ===== AI VOICE ON/OFF =====
@@ -14251,7 +14260,8 @@ async function tick(){
           ? '🔔 ສັນຍານຊື້ຂາຍຈະເລີ່ມຂຶ້ນຊ່ວງທ້າຍຮອບ (4 ວິນາທີສຸດທ້າຍ)'
           : '⏳ ຮອບນີ້ແມ່ນຮອບລໍຜົນ ລໍຈົນຮອດວິນາທີທີ່ 00';
       }
-      if(!isSignalRound) speakQueued('ຮອບນີ້ແມ່ນຮອບລໍຜົນ ລໍຈົນຮອດວິນາທີທີ່ 00', {source:'graph3'});
+      if(isSignalRound) speakQueued('รอบสัญญาณ', {source:'graph1'});
+      else speakQueued('รอบรอผล', {source:'graph1'});
       syncMoonWithTradeState(!isSignalRound);
     } else if(newCycleId !== currentCycleId){
       const cyclesSkipped = newCycleId - currentCycleId;
@@ -14273,7 +14283,7 @@ async function tick(){
           : '⏳ ຮອບນີ້ແມ່ນຮອບລໍຜົນ ລໍຈົນຮອດວິນາທີທີ່ 00';
       }
       // ສີຮອບລໍຜົນ (ຮອບສັນຍານ ສີ ຊື້/ຂາຍ ໂຕຮອບສັນຍານ)
-      if(!isSignalRound) speakQueued('ຮອບນີ້ແມ່ນຮອບລໍຜົນ ລໍຈົນຮອດວິນາທີທີ່ 00', {source:'graph3'});
+      if(!isSignalRound) speakQueued('รอบรอผล', {source:'graph1'});
       syncMoonWithTradeState(!isSignalRound);
     }
 
